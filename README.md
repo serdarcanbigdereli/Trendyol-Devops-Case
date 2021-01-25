@@ -137,7 +137,7 @@ Edit Consul , Promethes ,Grafana Deployment for node affinity
                 - node2              
 ```
 
-### Install Nginx Ingress
+### a) Install Nginx Ingress
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.43.0/deploy/static/provider/cloud/deploy.yaml
@@ -151,7 +151,7 @@ kubectl apply -f ingress.yaml
 http://prometheus.serdarcan.com
 
 
-### Consul inject to pods. For automatic tracing add yaml (Prometheus)
+### b) Consul inject to pods. For automatic tracing add yaml (Prometheus)
 
 ```yaml
       annotations:
