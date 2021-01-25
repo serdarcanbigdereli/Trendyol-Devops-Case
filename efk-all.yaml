@@ -496,7 +496,6 @@ spec:
       - name: varlibdockercontainers
         hostPath:
           path: /var/lib/docker/containers
-		  
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -514,4 +513,4 @@ spec:
             name: kibana-service
             port:
               number: 5601
-		  
+
