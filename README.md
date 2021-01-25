@@ -25,10 +25,10 @@ declare -a IPS=(192.168.0.247 192.168.0.248 192.168.0.249 192.168.0.250)
 CONFIG_FILE=inventory/mycluster/hosts.yaml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
 ansible-playbook -i inventory/mycluster/hosts.yaml cluster.yml
 ```
-server-0 --> node(master)
-server-1 --> node2
-server-2 --> node3
-server-3 --> node4
+* server-0 --> node(master)
+* server-1 --> node2
+* server-2 --> node3
+* server-3 --> node4
 
 2- Prometheus , Consul ,Grafana  İnstallation
 
