@@ -1,0 +1,517 @@
+---
+#elasticsearch1 deoloyment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: odfe-node1
+  name: odfe-node1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: odfe-node1
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "false"
+        prometheus.io/port: "9102"
+        consul.hashicorp.com/connect-inject: "false"    
+      labels:
+        app: odfe-node1
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - node4                
+      containers:
+      - env:
+        - name: TZ
+          value: Asia/Baghdad
+        - name: ES_JAVA_OPTS
+          value: -Xms512m -Xmx512m
+        - name: MAX_LOCKED_MEMORY
+          value: unlimited
+#        - name: bootstrap.memory_lock
+#          value: "true"
+        - name: cluster.initial_master_nodes
+          value: odfe-node1,odfe-node2,odfe-node3
+        - name: cluster.name
+          value: odfe-cluster
+        - name: discovery.seed_hosts
+          value: odfe-node1,odfe-node2,odfe-node3
+        - name: http.cors.allow-origin
+          value: '*'
+        - name: http.cors.enabled
+          value: "true"
+        - name: network.host
+          value: 0.0.0.0
+        - name: node.data
+          value: "false"
+        - name: node.name
+          value: odfe-node1
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+        name: odfe-node1
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: odfe-node1-claim0
+      restartPolicy: Always
+      volumes:
+      - name: odfe-node1-claim0
+        hostPath:
+         path: /elk/elasticsearch
+         type: DirectoryOrCreate
+
+---
+#elasticsearch1 port ser
+apiVersion: v1
+kind: Service
+metadata:
+  name: odfe-node1-service
+  labels:
+    app: odfe-node1
+spec:
+  type: NodePort
+  ports:
+  - port: 9200
+    nodePort: 9200
+    targetPort: 9200
+    protocol: TCP
+    name: odfe-node1-9200
+  - port: 9300
+    nodePort: 9300
+    targetPort: 9300
+    protocol: TCP
+    name: odfe-node1-9300
+  selector:
+    app: odfe-node1
+
+---
+#elasticsearch1 dns 
+apiVersion: v1
+kind: Service
+metadata:
+  name: odfe-node1
+  labels:
+    app: odfe-node1
+spec:
+  clusterIP: None
+  selector:
+    app: odfe-node1
+
+---
+#elasticsearch2 dep 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: odfe-node2
+  name: odfe-node2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: odfe-node2
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "false"
+        prometheus.io/port: "9102"
+        consul.hashicorp.com/connect-inject: "false"    
+      labels:
+        app: odfe-node2
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - node4                
+      containers:
+      - env:
+        - name: TZ
+          value: Asia/Baghdad
+        - name: ES_JAVA_OPTS
+          value: -Xms512m -Xmx512m
+        - name: MAX_LOCKED_MEMORY
+          value: unlimited
+ #       - name: bootstrap.memory_lock
+ #         value: "true"
+        - name: cluster.initial_master_nodes
+          value: odfe-node1,odfe-node2,odfe-node3
+        - name: cluster.name
+          value: odfe-cluster
+        - name: discovery.seed_hosts
+          value: odfe-node1,odfe-node2,odfe-node3
+        - name: http.cors.allow-origin
+          value: '*'
+        - name: http.cors.enabled
+          value: "true"
+        - name: network.host
+          value: 0.0.0.0
+        - name: node.name
+          value: odfe-node2
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+        name: odfe-node2
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: odfe-node2-claim0
+      restartPolicy: Always
+      volumes:
+      - name: odfe-node2-claim0
+        hostPath:
+         path: /elk/elasticsearch2
+         type: DirectoryOrCreate
+---
+#elasticsearch2 dns 
+apiVersion: v1
+kind: Service
+metadata:
+  name: odfe-node2
+  labels:
+    app: odfe-node2
+spec:
+  clusterIP: None
+  selector:
+    app: odfe-node2
+
+---
+#elasticsearch 3 deployment 
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: odfe-node3
+  name: odfe-node3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: odfe-node3
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "false"
+        prometheus.io/port: "9102"
+        consul.hashicorp.com/connect-inject: "false"    
+      labels:
+        app: odfe-node3
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - node4                
+      containers:
+      - env:
+        - name: TZ
+          value: Asia/Baghdad
+        - name: ES_JAVA_OPTS
+          value: -Xms512m -Xmx512m
+        - name: MAX_LOCKED_MEMORY
+          value: unlimited
+#        - name: bootstrap.memory_lock
+#          value: "true"
+        - name: cluster.initial_master_nodes
+          value: odfe-node1,odfe-node2,odfe-node3
+        - name: cluster.name
+          value: odfe-cluster
+        - name: discovery.seed_hosts
+          value: odfe-node1,odfe-node2,odfe-node3
+        - name: http.cors.allow-origin
+          value: '*'
+        - name: http.cors.enabled
+          value: "true"
+        - name: network.host
+          value: 0.0.0.0
+        - name: node.name
+          value: odfe-node3
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+        name: odfe-node3
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: odfe-node3-claim0
+      restartPolicy: Always
+      volumes:
+      - name: odfe-node3-claim0
+        hostPath:
+         path: /elk/elasticsearch3
+         type: DirectoryOrCreate
+
+---
+#elasticsearch 3 dns 
+apiVersion: v1
+kind: Service
+metadata:
+  name: odfe-node3 
+  labels:
+    app: odfe-node3
+spec:
+  clusterIP: None
+  selector:
+    app: odfe-node3
+
+
+---
+#kibana dep
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kibana
+  name: kibana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "false"
+        prometheus.io/port: "9102"
+        consul.hashicorp.com/connect-inject: "false"    
+      labels:
+        app: kibana
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - node4                
+      containers:
+      - env:
+        - name: TZ
+          value: Asia/Baghdad
+        - name: ELASTICSEARCH_HOSTS
+          value: http://odfe-node1:9200
+        - name: ELASTICSEARCH_URL
+          value: http://odfe-node1:9200
+        image: docker.elastic.co/kibana/kibana:7.10.2
+        name: kibana
+      restartPolicy: Always
+
+---
+#kibana  dns
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+   
+  labels:
+    app: kibana
+spec:
+  clusterIP: None
+  selector:
+    app: kibana
+---
+#kibana port servi
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana-service
+  labels:
+    app: kibana
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5601
+    protocol: TCP
+    name: kibana
+  selector:
+    app: kibana
+
+---
+#elasticsearch-hq deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: elasticsearch-hq
+  name: elasticsearch-hq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch-hq
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "false"
+        prometheus.io/port: "9102"
+        consul.hashicorp.com/connect-inject: "false"    
+      labels:
+        app: elasticsearch-hq
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - node4                
+      containers:
+      - image: elastichq/elasticsearch-hq
+        name: elasticsearch-hq
+      restartPolicy: Always
+
+---
+#elasticsearch-hq port service 
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch-hq-service
+  labels:
+    app: elasticsearch-hq
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    nodePort: 8080
+    targetPort: 5000
+    protocol: TCP
+    name: elasticsearch-hq
+  selector:
+    app: elasticsearch-hq
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: default
+  name: fluentd
+  labels:
+    app: fluentd
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: fluentd
+  namespace: default
+  labels:
+    app: fluentd
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - namespaces
+  verbs:
+  - get
+  - list
+  - watch
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: fluentd
+roleRef:
+  kind: ClusterRole
+  name: fluentd
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: fluentd
+  namespace: default
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd
+  labels:
+    app: fluentd
+spec:
+  selector:
+    matchLabels:
+      app: fluentd
+  template:
+    metadata:
+      annotations:
+         prometheus.io/scrape: "false"
+         prometheus.io/port: "9102"
+         consul.hashicorp.com/connect-inject: "false"
+      labels:
+        app: fluentd
+    spec:
+      serviceAccount: fluentd
+      serviceAccountName: fluentd
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      containers:
+      - name: fluentd
+        image: fluent/fluentd-kubernetes-daemonset:v1.4.2-debian-elasticsearch-1.1
+        env:
+          - name:  FLUENT_ELASTICSEARCH_HOST
+            value: "odfe-node1-service"
+          - name:  FLUENT_ELASTICSEARCH_PORT
+            value: "9200"
+          - name: FLUENT_ELASTICSEARCH_SCHEME
+            value: "http"
+          - name: FLUENTD_SYSTEMD_CONF
+            value: disable
+        resources:
+          limits:
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+		  
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kibana
+spec:
+  rules:
+  - host: kibana.serdarcan.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: kibana-service
+            port:
+              number: 5601
+		  
