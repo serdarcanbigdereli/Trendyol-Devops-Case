@@ -77,3 +77,14 @@ Edit Consul , Promethes ,Grafana Deployment for node affinity
                 values:
                 - node4                
 ```
+
+Install Nginx Ingress
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.43.0/deploy/static/provider/cloud/deploy.yaml
+```
+
+Use Ingress
+```bash
+kubectl apply -f ingress.yaml
+```
