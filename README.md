@@ -1,6 +1,6 @@
 # Trendyol-Devops-Case
 
-1- Kubernetes cluster setup with Kubespray 
+## 1- Kubernetes cluster setup with Kubespray 
 
 Preparation for Kubespray
 
@@ -30,7 +30,7 @@ ansible-playbook -i inventory/mycluster/hosts.yaml cluster.yml
 * server-2 --> node3
 * server-3 --> node4
 
-2- Prometheus , Consul ,Grafana  İnstallation
+## 2- Prometheus , Consul ,Grafana  İnstallation
 
 I used Layer 7 Observability with Consul Service Mesh, Prometheus, Grafana, and Kubernetes
 
