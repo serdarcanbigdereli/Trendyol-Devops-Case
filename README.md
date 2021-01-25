@@ -104,7 +104,7 @@ Consul inject to pods. For automatic tracing add yaml (Prometheus)
 
 See Grafana Dashboard logs on http://grafana.serdarcan.com  
 
-<img align="center" width="500" height="250" src="https://github.com/serdarcanbigdereli/Trendyol-Devops-Case/blob/main/grafana.PNG">
+<img align="center" width="750" height="450" src="https://github.com/serdarcanbigdereli/Trendyol-Devops-Case/blob/main/grafana.PNG">
 
 
 ## 3-EFK installation 
