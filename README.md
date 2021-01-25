@@ -33,6 +33,7 @@ Configure Cluster (Cluster name ,CoreDNS , Calico)
 vim inventory/mycluster/group_vars/k8s-cluster/k8s-cluster.yml
 ```
 
+Master and Node Configure
 ```bash
 cat inventory/mycluster/hosts.yaml
 ```
