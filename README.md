@@ -24,7 +24,15 @@ cp -rfp inventory/sample inventory/mycluster
 declare -a IPS=(192.168.0.247 192.168.0.248 192.168.0.249 192.168.0.250)
 CONFIG_FILE=inventory/mycluster/hosts.yaml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
 ```
-Configure to Kubespray
+
+
+### Configure to Kubespray
+
+Configure Cluster (Cluster name ,CoreDNS , Calico)
+```bash
+vim inventory/mycluster/group_vars/k8s-cluster/k8s-cluster.yml
+```
+
 ```bash
 cat inventory/mycluster/hosts.yaml
 ```
