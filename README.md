@@ -14,7 +14,7 @@ Clone to Kubespray
 ```bash
 git clone https://github.com/kubernetes-sigs/kubespray.git
 ```
-install Kubernetes Cluster
+Preinstall for Kubespray
 
 ```bash
 cd kubespray
@@ -23,8 +23,58 @@ pip3 install ruamel.yaml
 cp -rfp inventory/sample inventory/mycluster
 declare -a IPS=(192.168.0.247 192.168.0.248 192.168.0.249 192.168.0.250)
 CONFIG_FILE=inventory/mycluster/hosts.yaml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
+```
+Configure to Kubespray
+```bash
+cat inventory/mycluster/hosts.yaml
+```
+
+```yaml
+all:
+  hosts:
+    node1:
+      access_ip: 192.168.0.249
+      ansible_host: 192.168.0.249
+      ip: 192.168.0.249
+    node2:
+      access_ip: 192.168.0.251
+      ansible_host: 192.168.0.251
+      ip: 192.168.0.251
+    node3:
+      access_ip: 192.168.0.250
+      ansible_host: 192.168.0.250
+      ip: 192.168.0.250
+    node4:
+      access_ip: 192.168.0.248
+      ansible_host: 192.168.0.248
+      ip: 192.168.0.248
+  children:
+    kube-master:
+      hosts:
+        node1:
+    kube-node:
+      hosts:
+        node4:
+        node3:
+        node2:
+        node1:
+    etcd:
+      hosts:
+        node1:
+    k8s-cluster:
+      children:
+        kube-node:
+        kube-master:
+    calico-rr:
+      hosts: {}
+```
+
+Install Kubernetes with Kubespray
+
+```bash
 ansible-playbook -i inventory/mycluster/hosts.yaml cluster.yml
 ```
+
 * server-0 --> node(master)
 * server-1 --> node2
 * server-2 --> node3
